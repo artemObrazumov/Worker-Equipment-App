@@ -19,6 +19,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,8 +40,14 @@ fun LoginScreen(
     onLoginChanged: (login: String) -> Unit,
     onPasswordChanged: (password: String) -> Unit,
     onLoginAttempt: () -> Unit,
+    onLoggedIn: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    LaunchedEffect(state.hasLoggedIn) {
+        if (state.hasLoggedIn) {
+            onLoggedIn()
+        }
+    }
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
@@ -143,7 +150,8 @@ fun LoginScreenPreview() {
                 state = LoginScreenState(isLoading = false, email = "11", password = "pa"),
                 onLoginChanged = {},
                 onPasswordChanged = {},
-                onLoginAttempt = {}
+                onLoginAttempt = {},
+                onLoggedIn = {}
             )
         }
     }

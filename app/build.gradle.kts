@@ -68,8 +68,10 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
 
     // navigation
-
     implementation(libs.androidx.navigation.compose)
+
+    // datastore
+    implementation(libs.androidx.datastore.preferences)
 
     // adaptive pane
     implementation(libs.androidx.adaptive)

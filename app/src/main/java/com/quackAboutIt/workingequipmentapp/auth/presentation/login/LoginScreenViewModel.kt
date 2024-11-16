@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quackAboutIt.workingequipmentapp.auth.domain.LoginRepository
 import com.quackAboutIt.workingequipmentapp.auth.domain.LoginResult
+import com.quackAboutIt.workingequipmentapp.auth.domain.CredentialsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -12,7 +13,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginScreenViewModel(
-    private val loginRepository: LoginRepository
+    private val loginRepository: LoginRepository,
+    private val credentialsRepository: CredentialsRepository
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LoginScreenState())
@@ -54,8 +56,23 @@ class LoginScreenViewModel(
                 _state.value.password
             )
             when (result) {
-                is LoginResult.Success -> {}
-                is LoginResult.Failure -> {}
+                is LoginResult.Success -> {
+                    credentialsRepository.saveToken(result.response.token)
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            hasLoggedIn = true
+                        )
+                    }
+                }
+                is LoginResult.Failure -> {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.message
+                        )
+                    }
+                }
             }
         }
     }

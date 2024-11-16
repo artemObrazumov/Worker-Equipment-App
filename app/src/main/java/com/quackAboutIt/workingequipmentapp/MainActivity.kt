@@ -18,6 +18,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.quackAboutIt.workingequipmentapp.auth.presentation.login.LoginScreen
 import com.quackAboutIt.workingequipmentapp.auth.presentation.login.LoginScreenViewModel
+import com.quackAboutIt.workingequipmentapp.requests.domain.Request
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreen
 import com.quackAboutIt.workingequipmentapp.ui.theme.WorkingEquipmentAppTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -33,7 +35,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding),
                         navController = navController,
-                        startDestination = Login
+                        startDestination = Requests
                     ) {
                         composable<Login> {
                             val viewModel: LoginScreenViewModel = koinViewModel()
@@ -48,8 +50,15 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onLoginAttempt = {
                                     viewModel.doLogin()
+                                },
+                                onLoggedIn = {
+
                                 }
                             )
+                        }
+
+                        composable<Requests> {
+                            RequestListScreen()
                         }
                     }
                 }
