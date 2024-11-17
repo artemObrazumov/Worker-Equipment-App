@@ -8,7 +8,7 @@ import kotlinx.coroutines.delay
 class LoginRemoteRepository: LoginRepository {
 
     override suspend fun doLogin(email: String, password: String): LoginResult {
-        delay(2000L)
+        delay(500L)
         return LoginResult.Success(LoginResponse(token = "123"))
     }
 }
