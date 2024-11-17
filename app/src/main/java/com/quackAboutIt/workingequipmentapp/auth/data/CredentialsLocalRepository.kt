@@ -12,16 +12,22 @@ class CredentialsLocalRepository(
     private val dataStore: DataStore<Preferences>
 ): CredentialsRepository {
 
+    private var token: String? = null
+
     override suspend fun saveToken(token: String) {
         dataStore.edit {
             it[TOKEN] = token
         }
+        this.token = token
     }
 
     override suspend fun getToken(): String? {
-        return dataStore.data.map {
-            it[TOKEN]
-        }.first()
+        if (token == null) {
+            token = dataStore.data.map {
+                it[TOKEN]
+            }.first()
+        }
+        return token
     }
 
     private companion object {

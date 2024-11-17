@@ -60,7 +60,6 @@ class LoginScreenViewModel(
                     credentialsRepository.saveToken(result.response.token)
                     _state.update {
                         it.copy(
-                            isLoading = false,
                             hasLoggedIn = true
                         )
                     }
