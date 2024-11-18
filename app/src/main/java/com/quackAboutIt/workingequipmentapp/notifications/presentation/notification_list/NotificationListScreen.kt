@@ -25,7 +25,9 @@ fun NotificationListScreen(
             )
         }
         is NotificationListScreenState.Content -> {
-            LazyColumn {
+            LazyColumn(
+                modifier = modifier
+            ) {
                 item {
                     DetailsTopBar(
                         modifier = Modifier

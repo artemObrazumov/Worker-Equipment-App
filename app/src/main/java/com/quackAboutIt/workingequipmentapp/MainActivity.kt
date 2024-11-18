@@ -44,6 +44,8 @@ import com.quackAboutIt.workingequipmentapp.auth.presentation.login.LoginScreenV
 import com.quackAboutIt.workingequipmentapp.notifications.presentation.notification_list.NotificationListScreen
 import com.quackAboutIt.workingequipmentapp.notifications.presentation.notification_list.NotificationListScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.domain.Request
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.RequestEditorScreen
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.RequestEditorScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreen
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreenState
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreenViewModel
@@ -111,7 +113,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding),
                         navController = navController,
-                        startDestination = Login
+                        startDestination = Requests
                     ) {
                         composable<Login> {
                             val viewModel: LoginScreenViewModel = koinViewModel()
@@ -173,9 +175,33 @@ class MainActivity : ComponentActivity() {
                             enterTransition = { slideInVertically{ it } },
                             exitTransition = { slideOutVertically{ it } }
                         ) { 
-                            Box(modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.White))
+                            val viewModel: RequestEditorScreenViewModel = koinViewModel()
+                            val state by viewModel.state.collectAsState()
+
+                            RequestEditorScreen(
+                                state = state,
+                                onBackPressed = {
+                                    navController.navigateUp()
+                                },
+                                onWorkplaceMenuOpened = {
+                                    viewModel.openWorkplaceDialog()
+                                },
+                                onWorkplaceMenuClosed = {
+                                    viewModel.closeWorkplaceDialog()
+                                },
+                                onWorkplaceSelected = {
+                                    viewModel.selectWorkplace(it)
+                                },
+                                onEquipmentMenuOpened = {
+                                    viewModel.openEquipmentDialog()
+                                },
+                                onEquipmentMenuClosed = {
+                                    viewModel.closeEquipmentDialog()
+                                },
+                                onEquipmentSelected = {
+                                    viewModel.selectEquipment(it)
+                                },
+                            )
                         }
                     }
                 }
