@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.quackAboutIt.workingequipmentapp.core.presentation.components.DetailsTopBar
-import com.quackAboutIt.workingequipmentapp.core.presentation.components.LoadingScreen
+import com.quackAboutIt.workingequipmentapp.core.presentation.LoadingScreen
 import com.quackAboutIt.workingequipmentapp.notifications.presentation.notification_list.component.NotificationItem
 
 @Composable

@@ -92,11 +92,20 @@ class RequestEditorScreenViewModel(
     fun selectEquipment(equipment: Equipment) {
         _state.update {
             val content = it as RequestEditorScreenState.Content
+            val equipmentList = content.equipment.toMutableList().apply {
+                add(equipment.toState())
+            }
             content.copy(
                 isEquipmentDialogOpened = false,
-                equipment = content.equipment.apply {
-                    toMutableList().add(equipment.toState())
-                }
+                equipment = equipmentList
+            )
+        }
+    }
+
+    fun changeDistanceString(distanceString: String) {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                distanceString = distanceString
             )
         }
     }

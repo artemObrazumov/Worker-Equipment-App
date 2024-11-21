@@ -5,9 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.quackAboutIt.workingequipmentapp.core.presentation.components.LoadingScreen
+import com.quackAboutIt.workingequipmentapp.core.presentation.LoadingScreen
 import com.quackAboutIt.workingequipmentapp.requests.domain.Workplace
-import com.quackAboutIt.workingequipmentapp.requests.presentation.equipment_list.components.EquipmentItem
 import com.quackAboutIt.workingequipmentapp.requests.presentation.workplace_list.components.WorkplaceItem
 
 @Composable

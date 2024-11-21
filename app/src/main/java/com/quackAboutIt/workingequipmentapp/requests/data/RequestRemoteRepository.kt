@@ -4,11 +4,13 @@ import com.quackAboutIt.workingequipmentapp.requests.domain.Request
 import com.quackAboutIt.workingequipmentapp.requests.domain.RequestListResult
 import com.quackAboutIt.workingequipmentapp.requests.domain.RequestRepository
 import com.quackAboutIt.workingequipmentapp.requests.domain.RequestState
+import kotlinx.coroutines.delay
 import java.time.ZonedDateTime
 
 class RequestRemoteRepository : RequestRepository {
 
     override suspend fun getRequests(token: String): RequestListResult {
+        delay(5000L)
         return RequestListResult.Success(
             listOf(
                 Request(

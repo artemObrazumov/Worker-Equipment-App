@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier
                                     .height(40.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.secondary
+                                    containerColor = MaterialTheme.colorScheme.tertiary
                                 ),
                                 shape = RoundedCornerShape(10.dp),
                                 onClick = {
@@ -201,6 +201,9 @@ class MainActivity : ComponentActivity() {
                                 onEquipmentSelected = {
                                     viewModel.selectEquipment(it)
                                 },
+                                onDistanceChanged = {
+                                    viewModel.changeDistanceString(it)
+                                }
                             )
                         }
                     }
