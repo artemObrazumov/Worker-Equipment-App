@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.quackAboutIt.workingequipmentapp.core.presentation.LoadingScreen
 import com.quackAboutIt.workingequipmentapp.core.presentation.components.Container
 import com.quackAboutIt.workingequipmentapp.ui.theme.WorkingEquipmentAppTheme
 
@@ -91,8 +92,10 @@ fun LoginScreen(
         }
         Spacer(modifier = Modifier.height(36.dp))
         if (state.isLoading) {
-            CircularProgressIndicator(
-                modifier = modifier.size(40.dp)
+            LoadingScreen(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
             )
         } else {
             Button(

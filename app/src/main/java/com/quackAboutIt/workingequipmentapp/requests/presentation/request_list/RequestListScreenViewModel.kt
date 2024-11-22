@@ -31,9 +31,6 @@ class RequestListScreenViewModel(
 
     private fun loadRequests() {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update {
-                RequestListScreenState.Loading
-            }
             val result = requestRepository.getRequests(
                 credentialsRepository.getToken() ?: ""
             )

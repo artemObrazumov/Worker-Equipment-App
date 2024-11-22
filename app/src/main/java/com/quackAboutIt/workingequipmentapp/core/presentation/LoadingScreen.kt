@@ -32,40 +32,40 @@ fun LoadingScreen(
         modifier = modifier
             .fillMaxSize()
     ) {
-//        CircularProgressIndicator(
-//            modifier = Modifier.align(Alignment.Center)
-//        )
-        val animatedFloat = remember { Animatable(1f) }
-        val animatedFloat2 = remember { Animatable(1f) }
-
-        LaunchedEffect(animatedFloat) {
-            delay(200)
-            animatedFloat.animateTo(
-                targetValue = 0.4f, animationSpec = infiniteRepeatable(
-                    animation = tween(200, easing = FastOutSlowInEasing, delayMillis = 200),
-                    repeatMode = RepeatMode.Reverse
-                )
-            )
-        }
-        LaunchedEffect(animatedFloat) {
-            delay(300)
-            animatedFloat2.animateTo(
-                targetValue = 0.4f, animationSpec = infiniteRepeatable(
-                    animation = tween(200, easing = FastOutSlowInEasing, delayMillis = 200),
-                    repeatMode = RepeatMode.Reverse
-                )
-            )
-        }
-        Icon(
-            painter = painterResource(id = R.drawable.car),
-            contentDescription = null,
-            modifier = Modifier
-                .size(96.dp)
-                .scale(
-                    scaleX = animatedFloat2.value,
-                    scaleY = animatedFloat.value
-                )
-                .align(Alignment.Center)
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center)
         )
+//        val animatedFloat = remember { Animatable(1f) }
+//        val animatedFloat2 = remember { Animatable(1f) }
+//
+//        LaunchedEffect(animatedFloat) {
+//            delay(200)
+//            animatedFloat.animateTo(
+//                targetValue = 0.4f, animationSpec = infiniteRepeatable(
+//                    animation = tween(200, easing = FastOutSlowInEasing, delayMillis = 200),
+//                    repeatMode = RepeatMode.Reverse
+//                )
+//            )
+//        }
+//        LaunchedEffect(animatedFloat) {
+//            delay(300)
+//            animatedFloat2.animateTo(
+//                targetValue = 0.4f, animationSpec = infiniteRepeatable(
+//                    animation = tween(200, easing = FastOutSlowInEasing, delayMillis = 200),
+//                    repeatMode = RepeatMode.Reverse
+//                )
+//            )
+//        }
+//        Icon(
+//            painter = painterResource(id = R.drawable.car),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .size(96.dp)
+//                .scale(
+//                    scaleX = animatedFloat2.value,
+//                    scaleY = animatedFloat.value
+//                )
+//                .align(Alignment.Center)
+//        )
     }
 }

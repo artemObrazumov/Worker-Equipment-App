@@ -5,10 +5,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.quackAboutIt.workingequipmentapp.R
 import com.quackAboutIt.workingequipmentapp.core.presentation.components.Container
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.EquipmentInRequestState
@@ -35,7 +39,7 @@ fun EquipmentInRequestItem(
     modifier: Modifier = Modifier,
 ) {
     val formatter by remember {
-        mutableStateOf(DateTimeFormatter.ofPattern("hh:mm"))
+        mutableStateOf(DateTimeFormatter.ofPattern("HH:mm"))
     }
     Container(
         modifier = modifier
@@ -51,17 +55,6 @@ fun EquipmentInRequestItem(
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
-                    painterResource(id = R.drawable.trash),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            onItemDeleted()
-                        }
-                        .padding(8.dp)
-                )
-                Icon(
                     painterResource(id = R.drawable.pencil),
                     contentDescription = null,
                     modifier = Modifier
@@ -72,11 +65,33 @@ fun EquipmentInRequestItem(
                         }
                         .padding(8.dp)
                 )
+                Icon(
+                    painterResource(id = R.drawable.trash),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            onItemDeleted()
+                        }
+                        .padding(8.dp)
+                )
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                AsyncImage(
+                    model = equipmentInRequest.image,
+                    contentDescription = equipmentInRequest.equipmentName,
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                ) {
                     Text(
                         text = "Количество:\n${equipmentInRequest.quantity} ед.",
                         style = MaterialTheme.typography.labelMedium

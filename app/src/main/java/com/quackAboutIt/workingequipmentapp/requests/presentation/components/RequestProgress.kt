@@ -1,6 +1,5 @@
-package com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.components
+package com.quackAboutIt.workingequipmentapp.requests.presentation.components
 
-import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.EaseOutCubic
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -22,13 +21,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.SaverScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import com.quackAboutIt.workingequipmentapp.R
+import com.quackAboutIt.workingequipmentapp.core.presentation.utils.DpSaver
 import com.quackAboutIt.workingequipmentapp.ui.theme.WorkingEquipmentAppTheme
 
 @Composable
@@ -40,7 +44,7 @@ fun RequestProgress(
     BoxWithConstraints(
         modifier = modifier.fillMaxWidth()
     ) {
-        var part by remember {
+        var part by rememberSaveable(stateSaver = DpSaver) {
             mutableStateOf(0.dp)
         }
         val partAnimated by animateDpAsState(
@@ -51,7 +55,7 @@ fun RequestProgress(
             ),
             label = ""
         )
-        var filledProgress by remember {
+        var filledProgress by rememberSaveable(stateSaver = DpSaver) {
             mutableStateOf(0.dp)
         }
         val filledProgressAnimated by animateDpAsState(
@@ -63,7 +67,7 @@ fun RequestProgress(
             label = ""
         )
         val maxWidth = maxWidth
-        LaunchedEffect(true) {
+        LaunchedEffect(total) {
             part = maxWidth / (total + 1)
             filledProgress = maxWidth / (total + 1) * progress + 11.dp
         }

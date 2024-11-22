@@ -3,6 +3,7 @@ package com.quackAboutIt.workingequipmentapp.requests.presentation.request_edito
 import com.quackAboutIt.workingequipmentapp.requests.domain.Equipment
 import com.quackAboutIt.workingequipmentapp.requests.domain.EquipmentType
 import java.time.ZonedDateTime
+import java.util.UUID
 
 sealed class RequestEditorScreenState {
     data object Loading : RequestEditorScreenState()
@@ -13,17 +14,28 @@ sealed class RequestEditorScreenState {
         val unitAddress: String = "",
         val workplaceId: Long = -1,
         val workplaceAddress: String = "test",
-        val distanceString: String = "0.0",
+        val distanceString: String = "",
         val distance: Double = 0.0,
         val arrivalDate: ZonedDateTime = ZonedDateTime.now(),
         val equipment: List<EquipmentInRequestState> = emptyList(),
         val isWorkplaceDialogOpened: Boolean = false,
         val isEquipmentDialogOpened: Boolean = false,
-        val isEquipmentDetailsDialogOpened: Boolean = false
-    ) : RequestEditorScreenState()
+        val isEquipmentDetailsDialogOpened: Boolean = false,
+        val isEquipmentDetailsCalendarOpened: Boolean = false,
+        val isEquipmentDetailsCalendarWorkDetailsOpened: Boolean = false,
+        val editingEquipmentListId: String? = null,
+        val isUploading: Boolean = false,
+        val hasUploaded: Boolean = false
+    ) : RequestEditorScreenState() {
+        val editingEquipment: EquipmentInRequestState?
+            get() = equipment.firstOrNull {
+                it.listId == editingEquipmentListId
+            }
+    }
 }
 
 data class EquipmentInRequestState(
+    val listId: String = UUID.randomUUID().toString(),
     val equipmentId: Long,
     val equipmentName: String,
     val equipmentType: EquipmentType,
@@ -40,9 +52,13 @@ fun Equipment.toState(): EquipmentInRequestState {
         equipmentId = id,
         image = imageUrl,
         types = types,
-        quantity = 0,
-        arrivalTime = ZonedDateTime.now().plusHours(1),
-        workHours = 0,
+        quantity = 1,
+        arrivalTime = ZonedDateTime.now()
+            .withHour(8)
+            .withMinute(0)
+            .withSecond(0)
+            .withNano(0),
+        workHours = 1,
         workMinutes = 0,
         equipmentName = name,
         equipmentType = types.first()

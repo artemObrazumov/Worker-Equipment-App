@@ -2,6 +2,7 @@ package com.quackAboutIt.workingequipmentapp.core.presentation.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Container(
     modifier: Modifier = Modifier,
+    padding: PaddingValues = PaddingValues(16.dp),
     content: @Composable () -> Unit
 ) {
     Box(
@@ -23,7 +25,7 @@ fun Container(
                 color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(10.dp)
             )
-            .padding(16.dp)
+            .padding(paddingValues = padding)
     ) {
         content()
     }

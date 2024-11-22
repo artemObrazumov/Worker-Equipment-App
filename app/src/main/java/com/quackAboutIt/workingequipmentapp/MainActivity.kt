@@ -1,10 +1,13 @@
 package com.quackAboutIt.workingequipmentapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -33,17 +36,26 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
 import com.quackAboutIt.workingequipmentapp.auth.presentation.login.LoginScreen
 import com.quackAboutIt.workingequipmentapp.auth.presentation.login.LoginScreenViewModel
 import com.quackAboutIt.workingequipmentapp.notifications.presentation.notification_list.NotificationListScreen
 import com.quackAboutIt.workingequipmentapp.notifications.presentation.notification_list.NotificationListScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.domain.Request
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_details.RequestDetailsScreen
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_details.RequestDetailsScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.RequestEditorScreen
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.RequestEditorScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreen
@@ -51,9 +63,12 @@ import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.R
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.components.MainTopBar
 import com.quackAboutIt.workingequipmentapp.ui.theme.WorkingEquipmentAppTheme
+import io.ktor.http.parametersOf
 import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.ParametersHolder
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("StateFlowValueCalledInComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -141,7 +156,11 @@ class MainActivity : ComponentActivity() {
 
                             RequestListScreen(
                                 state = state,
-                                onRequestClicked = {},
+                                onRequestClicked = {
+                                    navController.navigate(
+                                        RequestDetails(69)
+                                    )
+                                },
                                 topBar = {
                                     MainTopBar(
                                         modifier = Modifier
@@ -152,6 +171,27 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onExitClicked = { }
                                     )
+                                }
+                            )
+                        }
+
+                        composable<RequestDetails>(
+                            enterTransition = { slideInVertically{ it } },
+                            exitTransition = { slideOutVertically{ it } }
+                        ) { backStackEntry ->
+
+                            val profile = backStackEntry.toRoute<RequestDetails>()
+                            val viewModel: RequestDetailsScreenViewModel = koinViewModel (
+                                parameters = { ParametersHolder(
+                                    mutableListOf(profile.id)
+                                ) }
+                            )
+                            val state by viewModel.state.collectAsState()
+
+                            RequestDetailsScreen(
+                                state = state,
+                                onBackPressed = {
+                                    navController.navigateUp()
                                 }
                             )
                         }
@@ -172,8 +212,8 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable<RequestEditor>(
-                            enterTransition = { slideInVertically{ it } },
-                            exitTransition = { slideOutVertically{ it } }
+                            enterTransition = { slideInVertically{ it } + fadeIn() },
+                            exitTransition = { slideOutVertically{ it } + fadeOut() }
                         ) { 
                             val viewModel: RequestEditorScreenViewModel = koinViewModel()
                             val state by viewModel.state.collectAsState()
@@ -203,6 +243,36 @@ class MainActivity : ComponentActivity() {
                                 },
                                 onDistanceChanged = {
                                     viewModel.changeDistanceString(it)
+                                },
+                                onEquipmentChanged = {
+                                    viewModel.changeEquipment(it)
+                                },
+                                onEquipmentDetailsMenuOpened = {
+                                    viewModel.openEquipmentMenuDetails()
+                                },
+                                onEquipmentDetailsMenuClosed = {
+                                    viewModel.closeEquipmentMenuDetails()
+                                },
+                                onEquipmentDeleted = {
+                                    viewModel.deleteEquipment(it)
+                                },
+                                onCalendarOpened = {
+                                    viewModel.openCalendarDialog()
+                                },
+                                onCalendarClosed = {
+                                    viewModel.closeCalendarDialog()
+                                },
+                                onWorkTimeCalendarOpened = {
+                                    viewModel.openWorkTimeCalendarDialog()
+                                },
+                                onWorkTimeCalendarClosed = {
+                                    viewModel.closeWorkTimeCalendarDialog()
+                                },
+                                onEditingFinished = {
+                                    viewModel.sentForm()
+                                },
+                                onFormSent = {
+                                    navController.navigateUp()
                                 }
                             )
                         }

@@ -5,8 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.quackAboutIt.workingequipmentapp.auth.domain.CredentialsRepository
 import com.quackAboutIt.workingequipmentapp.core.domain.UserDataRepository
 import com.quackAboutIt.workingequipmentapp.notifications.presentation.notification_list.NotificationListScreenState
+import com.quackAboutIt.workingequipmentapp.requests.data.EquipmentInRequestDTO
+import com.quackAboutIt.workingequipmentapp.requests.data.RequestDTO
 import com.quackAboutIt.workingequipmentapp.requests.domain.Equipment
+import com.quackAboutIt.workingequipmentapp.requests.domain.RequestRepository
+import com.quackAboutIt.workingequipmentapp.requests.domain.RequestSendResult
 import com.quackAboutIt.workingequipmentapp.requests.domain.Workplace
+import com.quackAboutIt.workingequipmentapp.requests.utils.toEquipmentInRequestDTO
+import com.quackAboutIt.workingequipmentapp.requests.utils.toRequestDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +23,8 @@ import kotlinx.coroutines.launch
 
 class RequestEditorScreenViewModel(
     private val credentialsRepository: CredentialsRepository,
-    private val userDataRepository: UserDataRepository
+    private val userDataRepository: UserDataRepository,
+    private val requestRepository: RequestRepository
 ): ViewModel() {
 
     private val _state: MutableStateFlow<RequestEditorScreenState> =
@@ -92,12 +99,38 @@ class RequestEditorScreenViewModel(
     fun selectEquipment(equipment: Equipment) {
         _state.update {
             val content = it as RequestEditorScreenState.Content
+            val equipmentState = equipment.toState()
             val equipmentList = content.equipment.toMutableList().apply {
-                add(equipment.toState())
+                add(equipmentState)
+            }
+            content.copy(
+                isEquipmentDialogOpened = false,
+                equipment = equipmentList,
+                editingEquipmentListId = equipmentState.listId
+            )
+        }
+    }
+
+    fun changeEquipment(equipment: EquipmentInRequestState) {
+        _state.update {
+            val content = it as RequestEditorScreenState.Content
+            val equipmentList = content.equipment.toMutableList().apply {
+                this[this.indexOfFirst { item ->
+                    item.listId == equipment.listId
+                }] = equipment
             }
             content.copy(
                 isEquipmentDialogOpened = false,
                 equipment = equipmentList
+            )
+        }
+    }
+
+    fun changeEditingEquipment(equipment: EquipmentInRequestState) {
+        _state.update {
+            val content = it as RequestEditorScreenState.Content
+            content.copy(
+                //editingEquipment = equipment
             )
         }
     }
@@ -107,6 +140,89 @@ class RequestEditorScreenViewModel(
             (it as RequestEditorScreenState.Content).copy(
                 distanceString = distanceString
             )
+        }
+    }
+
+    fun openCalendarDialog() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isEquipmentDetailsCalendarOpened = true
+            )
+        }
+    }
+
+    fun closeCalendarDialog() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isEquipmentDetailsCalendarOpened = false
+            )
+        }
+    }
+
+    fun openEquipmentMenuDetails() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isEquipmentDetailsDialogOpened = true
+            )
+        }
+    }
+
+    fun closeEquipmentMenuDetails() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isEquipmentDetailsDialogOpened = false
+            )
+        }
+    }
+
+    fun deleteEquipment(equipment: EquipmentInRequestState) {
+        _state.update {
+            val content = it as RequestEditorScreenState.Content
+            val equipmentList = content.equipment.toMutableList().apply {
+                this.removeIf { item -> item.listId == equipment.listId }
+            }
+            content.copy(
+                isEquipmentDialogOpened = false,
+                equipment = equipmentList
+            )
+        }
+    }
+
+    fun openWorkTimeCalendarDialog() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isEquipmentDetailsCalendarWorkDetailsOpened = true
+            )
+        }
+    }
+
+    fun closeWorkTimeCalendarDialog() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isEquipmentDetailsCalendarWorkDetailsOpened = false
+            )
+        }
+    }
+
+    fun sentForm() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update {
+                (it as RequestEditorScreenState.Content).copy(
+                    isLoading = true
+                )
+            }
+            val content = _state.value as RequestEditorScreenState.Content
+            val requestDTO = content.toRequestDTO()
+            val result = requestRepository.sendRequest(requestDTO)
+            when (result) {
+                is RequestSendResult.Success -> {
+                    _state.update {
+                        (it as RequestEditorScreenState.Content).copy(
+                            hasUploaded = true
+                        )
+                    }
+                }
+            }
         }
     }
 }

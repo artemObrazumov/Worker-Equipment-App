@@ -21,6 +21,8 @@ import com.quackAboutIt.workingequipmentapp.requests.domain.WorkplaceRepository
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.RequestEditorScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.equipment_list.EquipmentListScreenViewModel
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_details.RequestDetailsScreenState
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_details.RequestDetailsScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.workplace_list.WorkplaceListScreenViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -48,6 +50,8 @@ val appModule = module {
     viewModelOf(::RequestListScreenViewModel)
 
     viewModelOf(::RequestEditorScreenViewModel)
+
+    viewModelOf(::RequestDetailsScreenViewModel)
 
     singleOf(::WorkplaceRemoteRepository).bind<WorkplaceRepository>()
     viewModelOf(::WorkplaceListScreenViewModel)

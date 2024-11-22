@@ -53,7 +53,8 @@ fun RequestListScreen(
                         )
                     }
                     items(
-                        items = state.currentRequests
+                        items = state.currentRequests,
+                        key = { it.id }
                     ) { request ->
                         RequestItem(
                             modifier = Modifier
@@ -83,7 +84,8 @@ fun RequestListScreen(
                         )
                     }
                     items(
-                        items = state.futureRequests
+                        items = state.futureRequests,
+                        key = { it.id }
                     ) { request ->
                         RequestItem(
                             modifier = Modifier
@@ -107,7 +109,8 @@ fun RequestListScreen(
                         )
                     }
                     items(
-                        items = state.finishedRequests
+                        items = state.finishedRequests,
+                        key = { it.id }
                     ) { request ->
                         RequestItem(
                             modifier = Modifier

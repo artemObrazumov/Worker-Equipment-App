@@ -35,7 +35,7 @@ fun MainTopBar(
     ) {
         Text(
             text = name,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.labelMedium
         )
         Spacer(
             modifier = Modifier

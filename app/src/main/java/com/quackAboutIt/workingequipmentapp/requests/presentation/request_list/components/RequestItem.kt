@@ -15,12 +15,10 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.quackAboutIt.workingequipmentapp.core.presentation.components.Container
 import com.quackAboutIt.workingequipmentapp.requests.domain.Request
-import com.quackAboutIt.workingequipmentapp.requests.domain.RequestState
-import com.quackAboutIt.workingequipmentapp.ui.theme.WorkingEquipmentAppTheme
+import com.quackAboutIt.workingequipmentapp.requests.presentation.components.RequestProgress
 import java.time.format.DateTimeFormatter
 
 @Composable

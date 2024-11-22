@@ -63,6 +63,10 @@ dependencies {
     // material
     implementation(libs.androidx.material3)
 
+    // coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // compose
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
