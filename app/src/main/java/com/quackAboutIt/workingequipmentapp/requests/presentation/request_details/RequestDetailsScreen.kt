@@ -129,7 +129,7 @@ fun RequestDetailsScreen(
                             .padding(horizontal = 16.dp),
                         text = buildAnnotatedString {
                             withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
-                                append("Расстояние до объекта\n")
+                                append("Расстояние до объекта (в км)\n")
                             }
                             append(state.requestDetails.distance.toString())
                             append(" км")

@@ -53,6 +53,7 @@ import com.quackAboutIt.workingequipmentapp.requests.presentation.request_detail
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.RequestEditorScreen
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_editor.RequestEditorScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreen
+import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreenState
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.RequestListScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_list.components.MainTopBar
 import com.quackAboutIt.workingequipmentapp.ui.theme.WorkingEquipmentAppTheme
@@ -69,22 +70,28 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
-                var showActionButton by remember {
+                var isOnDashboard by remember {
+                    mutableStateOf(false)
+                }
+                var dashboardScreenLoaded by remember {
                     mutableStateOf(false)
                 }
                 navController.addOnDestinationChangedListener(
                     listener = { _, _, _ ->
-                        showActionButton = navController.currentDestination?.route ==
+                        isOnDashboard = navController.currentDestination?.route ==
                                 Requests.javaClass.toString().split(" ")[1]
                     }
                 )
+
+                val mainActivityViewModel: MainActivityViewModel = koinViewModel()
+                val userDataState by mainActivityViewModel.userData.collectAsState()
 
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize(),
                     floatingActionButton = {
                         AnimatedVisibility(
-                            visible = showActionButton,
+                            visible = isOnDashboard && dashboardScreenLoaded,
                             enter = slideInHorizontally { it*2 },
                             exit = slideOutHorizontally { it*2 }
                         ) {
@@ -125,7 +132,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier
                             .padding(innerPadding),
                         navController = navController,
-                        startDestination = Requests
+                        startDestination = Login
                     ) {
                         composable<Login> {
                             val viewModel: LoginScreenViewModel = koinViewModel()
@@ -150,19 +157,20 @@ class MainActivity : ComponentActivity() {
                         composable<Requests> {
                             val viewModel: RequestListScreenViewModel = koinViewModel()
                             val state by viewModel.state.collectAsState()
+                            dashboardScreenLoaded = state is RequestListScreenState.Content
 
                             RequestListScreen(
                                 state = state,
                                 onRequestClicked = {
                                     navController.navigate(
-                                        RequestDetails(69)
+                                        RequestDetails(it.id)
                                     )
                                 },
                                 topBar = {
                                     MainTopBar(
                                         modifier = Modifier
                                             .padding(horizontal = 16.dp),
-                                        name = "Иванов Иван Иванович",
+                                        name = userDataState?.name ?: "",
                                         onNotificationClicked = {
                                             navController.navigate(Notifications)
                                         },

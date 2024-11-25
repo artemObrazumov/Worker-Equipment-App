@@ -19,7 +19,6 @@ fun Container(
 ) {
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.primary,

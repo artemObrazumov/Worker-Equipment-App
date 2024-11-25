@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -95,12 +96,13 @@ fun EquipmentEditorScreen(
                         space = 16.dp,
                         alignment = Alignment.CenterHorizontally
                     ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 equipmentInRequest.types.forEach {
                     val isActive = it.id == equipmentInRequest.equipmentType.id
                     Container(
                         modifier = Modifier
-                            .width(IntrinsicSize.Min)
+                            .wrapContentWidth()
                             .background(
                                 if (isActive) {
                                     MaterialTheme.colorScheme.secondary
@@ -125,7 +127,10 @@ fun EquipmentEditorScreen(
                                 Color.White
                             } else {
                                 Color.Black
-                            }
+                            },
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .wrapContentWidth()
                         )
                     }
                 }
@@ -282,6 +287,10 @@ fun EquipmentEditorScreen(
                     style = MaterialTheme.typography.labelMedium
                 )
             }
+            Spacer(
+                modifier = Modifier
+                    .height(28.dp)
+            )
         }
     }
 }

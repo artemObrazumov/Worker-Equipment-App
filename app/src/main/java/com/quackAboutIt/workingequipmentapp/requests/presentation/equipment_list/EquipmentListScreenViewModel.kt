@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quackAboutIt.workingequipmentapp.auth.domain.CredentialsRepository
 import com.quackAboutIt.workingequipmentapp.requests.domain.EquipmentRepository
-import com.quackAboutIt.workingequipmentapp.requests.domain.EquipmentResult
+import com.quackAboutIt.workingequipmentapp.requests.data.EquipmentResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

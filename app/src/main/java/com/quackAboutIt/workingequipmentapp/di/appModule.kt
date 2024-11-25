@@ -2,11 +2,13 @@ package com.quackAboutIt.workingequipmentapp.di
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.preferencesDataStoreFile
+import com.quackAboutIt.workingequipmentapp.MainActivityViewModel
 import com.quackAboutIt.workingequipmentapp.auth.data.CredentialsLocalRepository
 import com.quackAboutIt.workingequipmentapp.auth.data.LoginRemoteRepository
 import com.quackAboutIt.workingequipmentapp.auth.domain.CredentialsRepository
 import com.quackAboutIt.workingequipmentapp.auth.domain.LoginRepository
 import com.quackAboutIt.workingequipmentapp.auth.presentation.login.LoginScreenViewModel
+import com.quackAboutIt.workingequipmentapp.core.data.HttpClientFactory
 import com.quackAboutIt.workingequipmentapp.core.data.UserDataRemoteRepository
 import com.quackAboutIt.workingequipmentapp.core.domain.UserDataRepository
 import com.quackAboutIt.workingequipmentapp.notifications.data.NotificationRemoteRepository
@@ -24,6 +26,7 @@ import com.quackAboutIt.workingequipmentapp.requests.presentation.equipment_list
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_details.RequestDetailsScreenState
 import com.quackAboutIt.workingequipmentapp.requests.presentation.request_details.RequestDetailsScreenViewModel
 import com.quackAboutIt.workingequipmentapp.requests.presentation.workplace_list.WorkplaceListScreenViewModel
+import io.ktor.client.engine.cio.CIO
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
@@ -31,6 +34,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val appModule = module {
+    single { HttpClientFactory.create(CIO.create()) }
     single {
         PreferenceDataStoreFactory.create (
             produceFile = {
@@ -58,4 +62,6 @@ val appModule = module {
 
     singleOf(::EquipmentRemoteRepository).bind<EquipmentRepository>()
     viewModelOf(::EquipmentListScreenViewModel)
+
+    viewModelOf(::MainActivityViewModel)
 }

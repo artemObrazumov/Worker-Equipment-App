@@ -2,7 +2,9 @@ package com.quackAboutIt.workingequipmentapp.requests.presentation.equipment_lis
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -48,6 +50,12 @@ fun EquipmentListScreen(
                     onClick = {
                         onEquipmentClicked(equipment)
                     }
+                )
+            }
+            item {
+                Spacer(
+                    modifier = Modifier
+                        .height(28.dp)
                 )
             }
         }
