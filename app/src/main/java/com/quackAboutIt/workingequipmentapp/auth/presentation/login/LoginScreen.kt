@@ -72,7 +72,9 @@ fun LoginScreen(
                 value = state.email,
                 onValueChange = onLoginChanged,
                 textStyle = MaterialTheme.typography.bodyMedium,
-                maxLines = 1
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
             )
         }
         Spacer(modifier = Modifier.height(28.dp))
@@ -87,7 +89,9 @@ fun LoginScreen(
                 value = state.password,
                 onValueChange = onPasswordChanged,
                 textStyle = MaterialTheme.typography.bodyMedium,
-                maxLines = 1
+                maxLines = 1,
+                modifier = Modifier
+                    .fillMaxWidth()
             )
         }
         Spacer(modifier = Modifier.height(36.dp))

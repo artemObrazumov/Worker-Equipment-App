@@ -5,9 +5,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +23,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +33,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
@@ -65,8 +71,12 @@ import com.quackAboutIt.workingequipmentapp.requests.presentation.workplace_list
 import com.quackAboutIt.workingequipmentapp.requests.presentation.workplace_list.WorkplaceListScreenViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.text.NumberFormat
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -84,12 +94,15 @@ fun RequestEditorScreen(
     onDistanceChanged: (distanceString: String) -> Unit,
     onEquipmentChanged: (equipment: EquipmentInRequestState) -> Unit,
     onEquipmentDeleted: (equipment: EquipmentInRequestState) -> Unit,
+    onArrivalDateChanged: (date: ZonedDateTime) -> Unit,
     onEquipmentDetailsMenuOpened: () -> Unit,
     onEquipmentDetailsMenuClosed: () -> Unit,
     onCalendarOpened: () -> Unit,
     onCalendarClosed: () -> Unit,
     onWorkTimeCalendarOpened: () -> Unit,
     onWorkTimeCalendarClosed: () -> Unit,
+    onArrivalDatePickerOpened: () -> Unit,
+    onArrivalDatePickerClosed: () -> Unit,
     onEditingFinished: () -> Unit,
     onFormSent: () -> Unit,
     modifier: Modifier = Modifier
@@ -111,6 +124,7 @@ fun RequestEditorScreen(
             LazyColumn(
                 modifier = modifier
             ) {
+                val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
                 item {
                     DetailsTopBar(
                         modifier = Modifier
@@ -118,8 +132,6 @@ fun RequestEditorScreen(
                         title = "Создание заявки",
                         onBackPressed = onBackPressed
                     )
-                }
-                item {
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 16.dp),
@@ -131,14 +143,10 @@ fun RequestEditorScreen(
                         },
                         style = MaterialTheme.typography.labelLarge
                     )
-                }
-                item {
                     Spacer(
                         modifier = Modifier
                             .height(28.dp)
                     )
-                }
-                item {
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 16.dp),
@@ -150,14 +158,10 @@ fun RequestEditorScreen(
                         },
                         style = MaterialTheme.typography.labelLarge
                     )
-                }
-                item {
                     Spacer(
                         modifier = Modifier
                             .height(28.dp)
                     )
-                }
-                item {
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 16.dp),
@@ -205,14 +209,53 @@ fun RequestEditorScreen(
                                 .padding(8.dp)
                         )
                     }
-                }
-                item {
                     Spacer(
                         modifier = Modifier
                             .height(28.dp)
                     )
-                }
-                item {
+                    Text(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                        text = buildAnnotatedString {
+                            withStyle(SpanStyle(fontWeight = FontWeight.SemiBold)) {
+                                append("Дата подачи на объект\n")
+                            }
+                        },
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .weight(1f),
+                            text = state.arrivalDate.format(formatter),
+                            style = MaterialTheme.typography.labelLarge,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Spacer(
+                            modifier = Modifier
+                                .width(20.dp)
+                        )
+                        Icon(
+                            painterResource(id = R.drawable.calendar),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .clickable {
+                                    onArrivalDatePickerOpened()
+                                }
+                                .padding(8.dp)
+                        )
+                    }
+                    Spacer(
+                        modifier = Modifier
+                            .height(28.dp)
+                    )
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 16.dp),
@@ -236,14 +279,10 @@ fun RequestEditorScreen(
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                         )
                     }
-                }
-                item {
                     Spacer(
                         modifier = Modifier
                             .height(28.dp)
                     )
-                }
-                item {
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 16.dp),
@@ -271,8 +310,6 @@ fun RequestEditorScreen(
                             style = MaterialTheme.typography.bodySmall
                         )
                     }
-                }
-                item {
                     Spacer(
                         modifier = Modifier
                             .height(18.dp)
@@ -435,8 +472,12 @@ fun RequestEditorScreen(
                             TimePicker(
                                 state = timePickerState,
                                 colors = TimePickerDefaults.colors().copy(
-                                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary.copy(
+                                        alpha = 0.1f
+                                    ),
+                                    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.tertiary.copy(
+                                        alpha = 0.1f
+                                    ),
                                     clockDialColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                                 )
                             )
@@ -500,8 +541,12 @@ fun RequestEditorScreen(
                             TimePicker(
                                 state = timePickerState,
                                 colors = TimePickerDefaults.colors().copy(
-                                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f),
+                                    timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary.copy(
+                                        alpha = 0.1f
+                                    ),
+                                    timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.tertiary.copy(
+                                        alpha = 0.1f
+                                    ),
                                     clockDialColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                                 )
                             )
@@ -528,6 +573,61 @@ fun RequestEditorScreen(
                                     style = MaterialTheme.typography.labelMedium
                                 )
                             }
+                        }
+                    }
+                }
+            }
+
+            if (state.isArrivalDateCalendarOpened) {
+                val datePickerState = rememberDatePickerState()
+
+                DatePickerDialog(
+                    onDismissRequest = onArrivalDatePickerClosed,
+                    confirmButton = {},
+                    modifier = Modifier
+                        .shadow(
+                            elevation = 16.dp,
+                            shape = RoundedCornerShape(16.dp)
+                        ),
+                    colors = DatePickerDefaults.colors().copy(
+                        containerColor = MaterialTheme.colorScheme.background
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        DatePicker(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            showModeToggle = false,
+                            state = datePickerState,
+                            colors = DatePickerDefaults.colors().copy(
+                                containerColor = MaterialTheme.colorScheme.background
+                            )
+                        )
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .requiredHeight(40.dp)
+                                .padding(horizontal = 16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.secondary
+                            ),
+                            shape = RoundedCornerShape(10.dp),
+                            onClick = {
+                                val instant = Instant
+                                    .ofEpochMilli(datePickerState.selectedDateMillis ?: 0)
+                                val date = instant.atZone(ZoneId.systemDefault())
+                                onArrivalDateChanged(date)
+                                onArrivalDatePickerClosed()
+                            }
+                        ) {
+                            Text(
+                                text = "Выбрать дату",
+                                style = MaterialTheme.typography.labelMedium
+                            )
                         }
                     }
                 }

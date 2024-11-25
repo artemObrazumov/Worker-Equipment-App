@@ -88,6 +88,9 @@ dependencies {
     // ktor
     implementation(libs.bundles.ktor)
 
+    // Lottie
+    implementation(libs.lottie.compose)
+
     // test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

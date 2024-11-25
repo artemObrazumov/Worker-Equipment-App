@@ -4,14 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.quackAboutIt.workingequipmentapp.auth.domain.CredentialsRepository
 import com.quackAboutIt.workingequipmentapp.core.domain.UserDataRepository
-import com.quackAboutIt.workingequipmentapp.notifications.presentation.notification_list.NotificationListScreenState
-import com.quackAboutIt.workingequipmentapp.requests.data.EquipmentInRequestDTO
-import com.quackAboutIt.workingequipmentapp.requests.data.RequestDTO
 import com.quackAboutIt.workingequipmentapp.requests.domain.Equipment
 import com.quackAboutIt.workingequipmentapp.requests.domain.RequestRepository
 import com.quackAboutIt.workingequipmentapp.requests.domain.RequestSendResult
 import com.quackAboutIt.workingequipmentapp.requests.domain.Workplace
-import com.quackAboutIt.workingequipmentapp.requests.utils.toEquipmentInRequestDTO
 import com.quackAboutIt.workingequipmentapp.requests.utils.toRequestDTO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,6 +16,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
 
 class RequestEditorScreenViewModel(
     private val credentialsRepository: CredentialsRepository,
@@ -204,6 +201,22 @@ class RequestEditorScreenViewModel(
         }
     }
 
+    fun openArrivalDatePicker() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isArrivalDateCalendarOpened = true
+            )
+        }
+    }
+
+    fun closeArrivalDatePicker() {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                isArrivalDateCalendarOpened = false
+            )
+        }
+    }
+
     fun sentForm() {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
@@ -223,6 +236,14 @@ class RequestEditorScreenViewModel(
                     }
                 }
             }
+        }
+    }
+
+    fun changeArrivalDate(date: ZonedDateTime) {
+        _state.update {
+            (it as RequestEditorScreenState.Content).copy(
+                arrivalDate = date
+            )
         }
     }
 }

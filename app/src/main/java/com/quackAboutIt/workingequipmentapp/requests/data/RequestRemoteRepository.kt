@@ -15,7 +15,7 @@ import java.time.ZonedDateTime
 class RequestRemoteRepository : RequestRepository {
 
     override suspend fun getRequests(token: String): RequestListResult {
-        delay(500L)
+        delay(5000L)
         return RequestListResult.Success(
             listOf(
                 Request(

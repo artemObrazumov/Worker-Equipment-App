@@ -15,7 +15,7 @@ class UserDataRemoteRepository: UserDataRepository {
                 name = "Artem",
                 unit = Unit(
                     id = -1,
-                    address = "какаято пизда"
+                    address = "где-то"
                 )
             )
         }

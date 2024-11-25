@@ -30,6 +30,12 @@ class CredentialsLocalRepository(
         return token
     }
 
+    override suspend fun deleteToken() {
+        dataStore.edit {
+            it.remove(TOKEN)
+        }
+    }
+
     private companion object {
         val TOKEN = stringPreferencesKey("token")
     }
